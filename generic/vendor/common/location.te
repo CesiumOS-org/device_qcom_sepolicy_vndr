@@ -63,7 +63,7 @@ allow vendor_location vendor_location_data_file:dir create_dir_perms;
 allow vendor_location vendor_location_data_file:file create_file_perms;
 
 # /dev/socket/vendor_location
-allow vendor_location vendor_location_socket:sock_file create_file_perms;
+allow vendor_location vendor_location_socket: {sock_file lnk_file } create_file_perms;
 allow vendor_location vendor_location_socket:dir rw_dir_perms;
 
 allow vendor_location vendor_hal_gnss_qti:unix_dgram_socket sendto;
@@ -97,3 +97,5 @@ unix_socket_send(vendor_location, vendor_wifihal,  hal_wifi_default);
 ##############
 allow vendor_location {vendor_hal_cacert_hwservice vendor_hal_datafactory_hwservice vendor_hal_cne_hwservice}:hwservice_manager find;
 binder_call(vendor_location, vendor_qtidataservices_app)
+
+crash_dump_fallback(vendor_location)

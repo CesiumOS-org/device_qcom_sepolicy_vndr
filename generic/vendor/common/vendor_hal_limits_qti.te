@@ -25,30 +25,18 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Policy for PSI service
-type vendor_psiservice, domain;
-type vendor_psiservice_exec, exec_type, vendor_file_type, file_type;
+type vendor_hal_limits_qti, domain;
+hal_server_domain(vendor_hal_limits_qti, vendor_hal_limits)
 
-# Started by init
-init_daemon_domain(vendor_psiservice)
+# Allow hwbinder call from hal client to server and vice-versa
+binder_call(vendor_hal_limits_client, vendor_hal_limits_server)
+binder_call(vendor_hal_limits_server, vendor_hal_limits_client)
 
-# Allow PSI Service to be a client of PASR HAL
-hal_client_domain(vendor_psiservice, vendor_hal_pasrmanager_memory)
+# Allow hwservice related rules
+hal_attribute_hwservice(vendor_hal_limits, vendor_hal_limits_hwservice)
 
-# Read /proc/zoneinfo
-allow vendor_psiservice proc_zoneinfo:file r_file_perms;
+type vendor_hal_limits_qti_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(vendor_hal_limits_qti)
 
-# Read /proc/meminfo
-allow vendor_psiservice proc_meminfo:file r_file_perms;
-
-# Read /proc/vmstat
-allow vendor_psiservice proc_vmstat:file r_file_perms;
-
-# Read/Write /proc/pressure/memory
-allow vendor_psiservice proc_pressure_mem:file rw_file_perms;
-
-# Read sysfs directories
-allow vendor_psiservice sysfs:dir r_dir_perms;
-
-# For reading "vendor.pasr." properties
-get_prop(vendor_psiservice, vendor_pasr_prop)
+# Allow access to thermal hal
+hal_client_domain(vendor_hal_limits_qti, hal_thermal)
